@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	beego "github.com/beego/beego/v2/server/web"
@@ -14,6 +15,7 @@ type WsController struct {
 	chatroom ChatRoom
 }
 
+/*
 // URLMapping ...
 func (c *WsController) URLMapping() {
 	c.Mapping("Get", c.Get)
@@ -23,40 +25,7 @@ func (c *WsController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 }
-
-// Get ...
-// @Title WS Connect
-// @Description create Ws
-// @Param	body		body 	models.Ws	true		"body for Ws content"
-// @Success 201 {object} models.Ws
-// @Failure 403 body is empty
-// @router / [get]
-func (c *WsController) Get() {
-	// chatgpt : beego use gorilla websocket chating example
-	// Upgrade HTTP connection to WebSocket
-	ws, err := websocket.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil, 1024, 1024)
-	if err != nil {
-		http.Error(c.Ctx.ResponseWriter, "Could not open WebSocket connection", http.StatusBadRequest)
-		return
-	}
-	c.conn = ws
-
-	// Add the new connection to the chat room
-	c.chatroom.AddClient(c)
-
-	// Wait for WebSocket messages
-	for {
-		_, msg, err := ws.ReadMessage()
-		if err != nil {
-			// Remove the connection from the chat room
-			c.chatroom.RemoveClient(c)
-			break
-		}
-
-		// Broadcast the message to all connected clients
-		c.chatroom.BroadcastMessage(c, msg)
-	}
-}
+*/
 
 // Post ...
 // @Title Create
@@ -93,7 +62,31 @@ func (c *WsController) GetOne() {
 // @Failure 403
 // @router / [get]
 func (c *WsController) GetAll() {
+	fmt.Println("메시지 받음1111")
+	// chatgpt : beego use gorilla websocket chating example
+	// Upgrade HTTP connection to WebSocket
+	ws, err := websocket.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil, 1024, 1024)
+	if err != nil {
+		http.Error(c.Ctx.ResponseWriter, "Could not open WebSocket connection", http.StatusBadRequest)
+		return
+	}
+	c.conn = ws
 
+	// Add the new connection to the chat room
+	c.chatroom.AddClient(c)
+
+	// Wait for WebSocket messages
+	for {
+		_, msg, err := ws.ReadMessage()
+		if err != nil {
+			// Remove the connection from the chat room
+			c.chatroom.RemoveClient(c)
+			break
+		}
+
+		// Broadcast the message to all connected clients
+		c.chatroom.BroadcastMessage(c, msg)
+	}
 }
 
 // Put ...
