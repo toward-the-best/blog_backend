@@ -32,6 +32,7 @@ func (c *WsController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [get]
 func (c *WsController) Get() {
+	// chatgpt : beego use gorilla websocket chating example
 	// Upgrade HTTP connection to WebSocket
 	ws, err := websocket.Upgrade(c.Ctx.ResponseWriter, c.Ctx.Request, nil, 1024, 1024)
 	if err != nil {
